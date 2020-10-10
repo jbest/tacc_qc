@@ -1,21 +1,13 @@
 import argparse
-from datetime import datetime
+import datetime
 import os
 from pathlib import Path
 import json
 import re
 import csv
 
-# File extensions that are scanned
-#FILE_TYPES = ['.jpg', '.jpeg', '.JPG', '.JPEG']
-
-def show_tree(path=None):
-    print('in show_tree:', path)
-    for root, dirs, files in os.walk(path):
-        print('show_tree_root:', root)
-
 def walk(path=None):
-    scan_start_time = datetime.now()
+    # scan_start_time = datetime.now()
     web_jpg_p = re.compile(web_jpg_regex)
     web_jpg_med_p = re.compile(web_jpg_med_regex)
     web_jpg_thumb_p = re.compile(web_jpg_thumb_regex)
@@ -35,6 +27,7 @@ def walk(path=None):
                 if catalog_number not in inventory:
                     inventory[catalog_number] = {'catalog_number': catalog_number}
                 inventory[catalog_number]['web_jpg'] = file_name
+                inventory[catalog_number]['web_jpg_path'] = file_path
                 #print('matches web:', file_name)
             if m_thumb:
                 #print('matches thumb:', file_name)
@@ -42,23 +35,17 @@ def walk(path=None):
                 if catalog_number not in inventory:
                     inventory[catalog_number] = {'catalog_number': catalog_number}
                 inventory[catalog_number]['web_jpg_thumb'] = file_name
+                inventory[catalog_number]['web_jpg_thumb_path'] = file_path
             if m_med:
                 catalog_number = m_med['catalog_number']
                 if catalog_number not in inventory:
                     inventory[catalog_number] = {'catalog_number': catalog_number}
                 inventory[catalog_number]['web_jpg_med'] = file_name
-                #print('matches med:', file_name)
-            """
-            if file_ext in FILE_TYPES:
-                print(file_name)
-            """
-            #file_path = Path(file).resolve()
-            #print('file:',file, file_path)
+                inventory[catalog_number]['web_jpg_med_path'] = file_path
+            # TODO: log unmatched files
 
- # set up argument parser
+# set up argument parser
 ap = argparse.ArgumentParser()
-#ap.add_argument("-d", "--directory", required=True, \
-#    help="Path to the directory that contains the images to be analyzed.")
 ap.add_argument("-c", "--config", required=True, \
     help="Path to the configuration file to be used for processing images.")
 
@@ -74,19 +61,18 @@ collection_prefix = collection.get('prefix', None)
 files = config.get('files', None)
 directory_path = Path(files.get('output_base_path', None))
 file_types = config.get('file_types', None)
-#directory_path = os.path.realpath(args["directory"])
 
 web_jpg_regex = file_types['web_jpg']['regex']
 web_jpg_med_regex = file_types['web_jpg_med']['regex']
 web_jpg_thumb_regex = file_types['web_jpg_thumb']['regex']
 
-inventory = {} # relevant contents of directory path
+inventory = {}  # relevant contents of directory path
 walk(path=directory_path)
-#print(inventory)
 
-
-with open('tacc_check_output.csv', 'w', newline='') as csvfile:
-    fieldnames = ['catalog_number', 'web_jpg', 'web_jpg_med', 'web_jpg_thumb']
+now = datetime.datetime.now()
+log_filename = collection['name'] + '_tacc_check_output_' + str(now.strftime('%Y-%m-%dT%H%M%S')) + '.csv'
+with open(log_filename, 'w', newline='') as csvfile:
+    fieldnames = ['catalog_number', 'web_jpg', 'web_jpg_path', 'web_jpg_med', 'web_jpg_med_path', 'web_jpg_thumb', 'web_jpg_thumb_path']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
     writer.writeheader()
     for catalog_number, value in inventory.items():
