@@ -83,7 +83,12 @@ web_jpg_thumb_regex = file_types['web_jpg_thumb']['regex']
 inventory = {} # relevant contents of directory path
 walk(path=directory_path)
 #print(inventory)
-for catalog_number, value in inventory.items():
-    print(catalog_number, value)
 
 
+with open('tacc_check_output.csv', 'w', newline='') as csvfile:
+    fieldnames = ['catalog_number', 'web_jpg', 'web_jpg_med', 'web_jpg_thumb']
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    writer.writeheader()
+    for catalog_number, value in inventory.items():
+        #print(catalog_number, value)
+        writer.writerow(value)
