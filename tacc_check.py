@@ -25,26 +25,27 @@ def walk(path=None):
         for file in files:
             file_path = Path(root).joinpath(file)
             file_name = file_path.name
+            m_web = web_jpg_p.match(file_name)
+            m_thumb = web_jpg_thumb_p.match(file_name)
+            m_med = web_jpg_med_p.match(file_name)
             #file_ext = file_path.suffix
-            if web_jpg_p.match(file_name):
+            if m_web:
                 # full sized image
-                m = web_jpg_p.match(file_name)
-                #print(m.groupdict())
-                catalog_number = m['catalog_number']
+                catalog_number = m_web['catalog_number']
                 if catalog_number not in inventory:
-                    inventory[catalog_number] = {}
+                    inventory[catalog_number] = {'catalog_number': catalog_number}
                 inventory[catalog_number]['web_jpg'] = file_name
                 print('matches web:', file_name)
-            if web_jpg_thumb_p.match(file_name):
+            if m_thumb:
                 print('matches thumb:', file_name)
-                m = web_jpg_thumb_p.match(file_name)
-                catalog_number = m['catalog_number']
+                catalog_number = m_thumb['catalog_number']
                 if catalog_number not in inventory:
-                    inventory[catalog_number] = {}
+                    inventory[catalog_number] = {'catalog_number': catalog_number}
                 inventory[catalog_number]['web_jpg_thumb'] = file_name
-            if web_jpg_med_p.match(file_name):
+            if m_med:
+                catalog_number = m_med['catalog_number']
                 if catalog_number not in inventory:
-                    inventory[catalog_number] = {}
+                    inventory[catalog_number] = {'catalog_number': catalog_number}
                 inventory[catalog_number]['web_jpg_med'] = file_name
                 print('matches med:', file_name)
             """
@@ -81,4 +82,8 @@ web_jpg_thumb_regex = file_types['web_jpg_thumb']['regex']
 
 inventory = {} # relevant contents of directory path
 walk(path=directory_path)
-print(inventory)
+#print(inventory)
+for catalog_number, value in inventory.items():
+    print(catalog_number, value)
+
+
