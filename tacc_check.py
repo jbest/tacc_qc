@@ -19,7 +19,6 @@ def walk(path=None):
     web_jpg_p = re.compile(web_jpg_regex)
     web_jpg_med_p = re.compile(web_jpg_med_regex)
     web_jpg_thumb_p = re.compile(web_jpg_thumb_regex)
-    print(web_jpg_thumb_regex)
 
     for root, dirs, files in os.walk(path):
 
@@ -36,9 +35,9 @@ def walk(path=None):
                 if catalog_number not in inventory:
                     inventory[catalog_number] = {'catalog_number': catalog_number}
                 inventory[catalog_number]['web_jpg'] = file_name
-                print('matches web:', file_name)
+                #print('matches web:', file_name)
             if m_thumb:
-                print('matches thumb:', file_name)
+                #print('matches thumb:', file_name)
                 catalog_number = m_thumb['catalog_number']
                 if catalog_number not in inventory:
                     inventory[catalog_number] = {'catalog_number': catalog_number}
@@ -48,7 +47,7 @@ def walk(path=None):
                 if catalog_number not in inventory:
                     inventory[catalog_number] = {'catalog_number': catalog_number}
                 inventory[catalog_number]['web_jpg_med'] = file_name
-                print('matches med:', file_name)
+                #print('matches med:', file_name)
             """
             if file_ext in FILE_TYPES:
                 print(file_name)
@@ -93,3 +92,4 @@ with open('tacc_check_output.csv', 'w', newline='') as csvfile:
     for catalog_number, value in inventory.items():
         #print(catalog_number, value)
         writer.writerow(value)
+print('Check complete, results written to tacc_check_output.csv.')
