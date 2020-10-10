@@ -8,6 +8,8 @@
         "number_pad": 7,
         "log_directory_path": "/corral-repl/projects/TORCH/archive/BRIT/logs/",
         "output_base_path": "/corral-repl/projects/TORCH/",
+        "web_base_path": "/corral-repl/projects/TORCH/web/BRIT/",
+        "archive_base_path": "/corral-repl/projects/TORCH/archive/BRIT/",
         "input_path": "/corral-repl/projects/TORCH/tools/ingest/BRIT"
     },
     "file_types": {
