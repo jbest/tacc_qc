@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import json
 import re
+import csv
 
 # File extensions that are scanned
 #FILE_TYPES = ['.jpg', '.jpeg', '.JPG', '.JPEG']
