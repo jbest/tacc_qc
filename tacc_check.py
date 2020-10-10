@@ -59,7 +59,7 @@ with open(config_file) as f:
 collection = config.get('collection', None)
 collection_prefix = collection.get('prefix', None)
 files = config.get('files', None)
-directory_path = Path(files.get('output_base_path', None))
+directory_path = Path(files.get('web_base_path', None))
 file_types = config.get('file_types', None)
 
 web_jpg_regex = file_types['web_jpg']['regex']
