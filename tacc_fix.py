@@ -1,9 +1,12 @@
 import csv
 import argparse
 from pathlib import Path
+from wand.image import Image
 
 THUMB_DESIGNATOR = '_thumb'
+THUMB_SIZE = 'x390'
 MED_DESIGNATOR = '_med'
+MED_SIZE = 'x900'
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--input", required=True, \
@@ -13,8 +16,8 @@ args = vars(ap.parse_args())
 input_file = args['input']
 
 def create_derivative(web_image_path=None, derivative_designator=None):
+    # Will generate new derivative if needed
     if web_image_path.exists():
-        print('full image exists')
         # Create derivative name
         derivative_file_name = full_image_path.stem + derivative_designator + full_image_path.suffix
         # Check if derivative image currently exists
@@ -25,8 +28,20 @@ def create_derivative(web_image_path=None, derivative_designator=None):
         else:
             # Generate derivative
             print('TODO: generate derivative:', derivative_file_path)
+            generate_derivative(source_path=web_image_path, derivative_path=derivative_file_path, derivative_designator=derivative_designator)
     else:
         print('Full image missing:', web_image_path)
+
+def generate_derivative(source_path=None, derivative_path=None, derivative_designator=None):
+    if derivative_designator == THUMB_DESIGNATOR:
+        dimension = THUMB_SIZE
+    if derivative_designator == MED_DESIGNATOR:
+        dimension = MED_SIZE
+    with Image(filename=source_path) as original:
+        with original.clone() as derivative:
+            # resize height, preserve aspect ratio
+            derivative.transform(resize=dimension)
+            derivative.save(filename=derivative_path)
 
 with open(input_file) as csvfile:
     reader = csv.DictReader(csvfile)
@@ -35,6 +50,7 @@ with open(input_file) as csvfile:
         if row['web_jpg_path']:
             #print(row['web_jpg_path'])
             full_image_path = Path(row['web_jpg_path'])
+            # TODO: log new, complete records
             if not row['web_jpg_thumb_path']:
                 print('missing thumb record:', row['web_jpg_path'])
                 # Create thumb derivative if needed
