@@ -12,31 +12,33 @@ ap.add_argument("-i", "--input", required=True, \
 args = vars(ap.parse_args())
 input_file = args['input']
 
+def create_derivative(web_image_path=None, derivative_designator=None):
+    if web_image_path.exists():
+        print('full image exists')
+        # Create derivative name
+        derivative_file_name = full_image_path.stem + derivative_designator + full_image_path.suffix
+        # Check if derivative image currently exists
+        derivative_file_path = full_image_path.parent.joinpath(derivative_file_name)
+        #print('thumb_file_path:', thumb_file_path)
+        if derivative_file_path.exists():
+            print('Derivative exists:', derivative_file_path)
+        else:
+            # Generate derivative
+            print('TODO: generate derivative:', derivative_file_path)
+    else:
+        print('Full image missing:', web_image_path)
+
 with open(input_file) as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         #print(row['catalog_number'])
         if row['web_jpg_path']:
             #print(row['web_jpg_path'])
+            full_image_path = Path(row['web_jpg_path'])
             if not row['web_jpg_thumb_path']:
                 print('missing thumb record:', row['web_jpg_path'])
-                # Check if full image currently exists
-                full_image_path = Path(row['web_jpg_path'])
                 # Create thumb derivative if needed
-                #create_derivative(web_image_path=full_image_path, derivative_designator=THUMB_DESIGNATOR)
-                if full_image_path.exists():
-                    print('full image exists')
-                    # Create derivative name
-                    thumb_file_name = full_image_path.stem + THUMB_DESIGNATOR + full_image_path.suffix
-                    #print('thumb_file_name to generate:', thumb_file_name)
-                    # Check if derivative image currently exists
-                    thumb_file_path = full_image_path.parent.joinpath(thumb_file_name)
-                    #print('thumb_file_path:', thumb_file_path)
-                    if thumb_file_path.exists():
-                        print('Thumb exists:', thumb_file_path)
-                    else:
-                        # Generate thumb
-                        print('TODO: generate thumb', thumb_file_path)
-
+                create_derivative(web_image_path=full_image_path, derivative_designator=THUMB_DESIGNATOR)
             if not row['web_jpg_med_path']:
                 print('missing med record:', row['web_jpg_path'])
+                create_derivative(web_image_path=full_image_path, derivative_designator=MED_DESIGNATOR)
