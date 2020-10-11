@@ -21,6 +21,7 @@ def walk(path=None):
             m_thumb = web_jpg_thumb_p.match(file_name)
             m_med = web_jpg_med_p.match(file_name)
             #file_ext = file_path.suffix
+            #TODO check to make sure file size > 0
             if m_web:
                 # full sized image
                 catalog_number = m_web['catalog_number']

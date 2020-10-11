@@ -27,7 +27,6 @@ def create_derivative(web_image_path=None, derivative_designator=None):
             print('Derivative exists:', derivative_file_path)
         else:
             # Generate derivative
-            print('TODO: generate derivative:', derivative_file_path)
             generate_derivative(source_path=web_image_path, derivative_path=derivative_file_path, derivative_designator=derivative_designator)
     else:
         print('Full image missing:', web_image_path)
@@ -37,11 +36,15 @@ def generate_derivative(source_path=None, derivative_path=None, derivative_desig
         dimension = THUMB_SIZE
     if derivative_designator == MED_DESIGNATOR:
         dimension = MED_SIZE
-    with Image(filename=source_path) as original:
-        with original.clone() as derivative:
-            # resize height, preserve aspect ratio
-            derivative.transform(resize=dimension)
-            derivative.save(filename=derivative_path)
+    try:
+        with Image(filename=source_path) as original:
+            with original.clone() as derivative:
+                # resize height, preserve aspect ratio
+                derivative.transform(resize=dimension)
+                derivative.save(filename=derivative_path)
+    except Exception as e:
+        print('Unable to create derivative:', e)
+
 
 with open(input_file) as csvfile:
     reader = csv.DictReader(csvfile)
