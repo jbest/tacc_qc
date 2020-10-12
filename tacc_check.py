@@ -79,4 +79,4 @@ with open(log_filename, 'w', newline='') as csvfile:
     for catalog_number, value in inventory.items():
         #print(catalog_number, value)
         writer.writerow(value)
-print('Check complete, results written to tacc_check_output.csv.')
+print('Check complete, results written to:', log_filename)
