@@ -68,7 +68,7 @@ def generate_url(file_base_path=FILE_BASE_PATH, file_path=None, url_base=URL_BAS
     else:
         return None
 
-# Generate URLs for new derivatives
+# Generate new derivative files
 # Logging new images in format for Symbiota URL mapping ingest
 occurrence_set = {}
 with open(input_file) as csvfile:
@@ -101,8 +101,8 @@ with open(input_file) as csvfile:
                 if not occurrence_set[catalog_number]['thumbnail'] and not occurrence_set[catalog_number]['web']:
                     del occurrence_set[catalog_number]
 
-input_path = Path(input_file)
-output_file_name = input_path.stem + '_new_urls.csv'
+# Write complete URL records in Symbiota URL mapping format
+output_file_name = Path(input_file).stem + '_new_urls.csv'
 with open(output_file_name, 'w', newline='') as csvfile:
     fieldnames=['catalog_number', 'large', 'web', 'thumbnail']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
