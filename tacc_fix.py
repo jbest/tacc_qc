@@ -59,37 +59,43 @@ def generate_url(file_base_path=FILE_BASE_PATH, file_path=None, url_base=URL_BAS
     """
     Generate a URL using the file paths and URL base path.
     """
-    common_path = os.path.commonpath([file_base_path, file_path])
-    relative_path = os.path.relpath(file_path, start=common_path)
-    image_url = urljoin(URL_BASE, relative_path)
-    return image_url
+    if file_path:
+        common_path = os.path.commonpath([file_base_path, file_path])
+        relative_path = os.path.relpath(file_path, start=common_path)
+        image_url = urljoin(URL_BASE, relative_path)
+        return image_url
+    else:
+        return None
 
 occurrence_set = {}  # Logging new images in format for Symbiota URL mapping ingest
 with open(input_file) as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         if row['web_jpg_path']:  # Must have a large web image to create derivs
-            # only create and log if derivs missing
-            if not row['web_jpg_thumb_path'] or not row['web_jpg_med_path']:
-                catalog_number = row['catalog_number']
-                full_image_path = Path(row['web_jpg_path'])
-                # TODO only log new urls
-                if catalog_number not in occurrence_set:
-                    occurrence_set[catalog_number]={'catalog_number': catalog_number}
-                    occurrence_set[catalog_number]['large'] = generate_url(file_path=row['web_jpg_path'])
-                # TODO: log new, complete records
-                if not row['web_jpg_thumb_path']:
-                    # print('missing thumb record:', row['web_jpg_path'])
-                    # Create thumb derivative if needed
-                    derivative_path = create_derivative(web_image_path=full_image_path, derivative_designator=THUMB_DESIGNATOR)
-                    if derivative_path:
-                        occurrence_set[catalog_number]['thumbnail'] = generate_url(file_path=derivative_path)
-                if not row['web_jpg_med_path']:
-                    # print('missing med record:', row['web_jpg_path'])
-                    derivative_path = create_derivative(web_image_path=full_image_path, derivative_designator=MED_DESIGNATOR)
-                    if derivative_path:
-                        occurrence_set[catalog_number]['web'] = generate_url(file_path=derivative_path)
-
+            catalog_number = row['catalog_number']
+            full_image_path = Path(row['web_jpg_path'])
+            # TODO only log new urls
+            if catalog_number not in occurrence_set:
+                print('adding:', catalog_number)
+                occurrence_set[catalog_number] = {'catalog_number': catalog_number}
+                occurrence_set[catalog_number]['large'] = generate_url(file_path=row['web_jpg_path'])
+            # TODO: log new, complete records
+            if not row['web_jpg_thumb_path']:
+                print('missing thumb record:', row['web_jpg_path'])
+                # Create thumb derivative if needed
+                derivative_path = create_derivative(web_image_path=full_image_path, derivative_designator=THUMB_DESIGNATOR)
+                occurrence_set[catalog_number]['thumbnail'] = generate_url(file_path=derivative_path)
+            else:
+                occurrence_set[catalog_number]['thumbnail'] = row['web_jpg_thumb_path']
+            if not row['web_jpg_med_path']:
+                print('missing med record:', row['web_jpg_path'])
+                derivative_path = create_derivative(web_image_path=full_image_path, derivative_designator=MED_DESIGNATOR)
+                occurrence_set[catalog_number]['web'] = generate_url(file_path=derivative_path)
+            else:
+                occurrence_set[catalog_number]['web'] = row['web_jpg_med_path']
+            # if either deriv path is empty, remove URLs
+            if not occurrence_set[catalog_number]['thumbnail'] and not occurrence_set[catalog_number]['web']:
+                del occurrence_set[catalog_number]
 
 input_path = Path(input_file)
 output_file_name = input_path.stem + '_new_urls.csv'
