@@ -2,11 +2,17 @@ import csv
 import argparse
 from pathlib import Path
 from wand.image import Image
+import os.path
+from urllib.parse import urljoin
 
 THUMB_DESIGNATOR = '_thumb'
 THUMB_SIZE = 'x390'
 MED_DESIGNATOR = '_med'
 MED_SIZE = 'x900'
+
+# For URL generation
+FILE_BASE_PATH = '/corral-repl/projects/TORCH/web/'
+URL_BASE = 'https://web.corral.tacc.utexas.edu/torch/'
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--input", required=True, \
@@ -22,14 +28,17 @@ def create_derivative(web_image_path=None, derivative_designator=None):
         derivative_file_name = full_image_path.stem + derivative_designator + full_image_path.suffix
         # Check if derivative image currently exists
         derivative_file_path = full_image_path.parent.joinpath(derivative_file_name)
-        #print('thumb_file_path:', thumb_file_path)
         if derivative_file_path.exists():
+            # Derivative was generated between time directory was scanned and now
             print('Derivative exists:', derivative_file_path)
+            return derivative_file_path # Existing path
         else:
             # Generate derivative
-            generate_derivative(source_path=web_image_path, derivative_path=derivative_file_path, derivative_designator=derivative_designator)
+            derivative_result = generate_derivative(source_path=web_image_path, derivative_path=derivative_file_path, derivative_designator=derivative_designator)
+            return derivative_result
     else:
         print('Full image missing:', web_image_path)
+        return None
 
 def generate_derivative(source_path=None, derivative_path=None, derivative_designator=None):
     if derivative_designator == THUMB_DESIGNATOR:
@@ -42,22 +51,50 @@ def generate_derivative(source_path=None, derivative_path=None, derivative_desig
                 # resize height, preserve aspect ratio
                 derivative.transform(resize=dimension)
                 derivative.save(filename=derivative_path)
+                return derivative_path
     except Exception as e:
         print('Unable to create derivative:', e)
 
+def generate_url(file_base_path=FILE_BASE_PATH, file_path=None, url_base=URL_BASE):
+    """
+    Generate a URL using the file paths and URL base path.
+    """
+    common_path = os.path.commonpath([file_base_path, file_path])
+    relative_path = os.path.relpath(file_path, start=common_path)
+    image_url = urljoin(URL_BASE, relative_path)
+    return image_url
 
+occurrence_set = {}  # Logging new images in format for Symbiota URL mapping ingest
 with open(input_file) as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
-        #print(row['catalog_number'])
         if row['web_jpg_path']:
-            #print(row['web_jpg_path'])
+            catalog_number = row['catalog_number']
             full_image_path = Path(row['web_jpg_path'])
+            # TODO only log new urls
+            if catalog_number not in occurrence_set:
+                occurrence_set[catalog_number]={'catalog_number': catalog_number}
+                occurrence_set[catalog_number]['large'] = generate_url(file_path=row['web_jpg_path'])
             # TODO: log new, complete records
             if not row['web_jpg_thumb_path']:
-                print('missing thumb record:', row['web_jpg_path'])
+                # print('missing thumb record:', row['web_jpg_path'])
                 # Create thumb derivative if needed
-                create_derivative(web_image_path=full_image_path, derivative_designator=THUMB_DESIGNATOR)
+                derivative_path = create_derivative(web_image_path=full_image_path, derivative_designator=THUMB_DESIGNATOR)
+                if derivative_path:
+                    occurrence_set[catalog_number]['thumbnail'] = generate_url(file_path=derivative_path)
             if not row['web_jpg_med_path']:
-                print('missing med record:', row['web_jpg_path'])
-                create_derivative(web_image_path=full_image_path, derivative_designator=MED_DESIGNATOR)
+                # print('missing med record:', row['web_jpg_path'])
+                derivative_path = create_derivative(web_image_path=full_image_path, derivative_designator=MED_DESIGNATOR)
+                if derivative_path:
+                    occurrence_set[catalog_number]['web'] = generate_url(file_path=derivative_path)
+
+
+input_path = Path(input_file)
+output_file_name = input_path.stem + '_new_urls.csv'
+with open(output_file_name, 'w', newline='') as csvfile:
+    fieldnames=['catalog_number', 'large', 'web', 'thumbnail']
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    writer.writeheader()
+    for key, image_set in occurrence_set.items():
+        writer.writerow(image_set)
+
