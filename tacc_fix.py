@@ -67,7 +67,9 @@ def generate_url(file_base_path=FILE_BASE_PATH, file_path=None, url_base=URL_BAS
     else:
         return None
 
-occurrence_set = {}  # Logging new images in format for Symbiota URL mapping ingest
+# Generate URLs for new derivatives
+# Logging new images in format for Symbiota URL mapping ingest
+occurrence_set = {}
 with open(input_file) as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
@@ -106,4 +108,3 @@ with open(output_file_name, 'w', newline='') as csvfile:
     writer.writeheader()
     for key, image_set in occurrence_set.items():
         writer.writerow(image_set)
-
