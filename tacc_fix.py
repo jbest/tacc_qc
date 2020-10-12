@@ -54,6 +54,7 @@ def generate_derivative(source_path=None, derivative_path=None, derivative_desig
                 return derivative_path
     except Exception as e:
         print('Unable to create derivative:', e)
+        return None
 
 def generate_url(file_base_path=FILE_BASE_PATH, file_path=None, url_base=URL_BASE):
     """
