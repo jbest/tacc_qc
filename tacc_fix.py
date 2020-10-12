@@ -21,8 +21,9 @@ ap.add_argument("-i", "--input", required=True, \
 args = vars(ap.parse_args())
 input_file = args['input']
 
+
 def create_derivative(web_image_path=None, derivative_designator=None):
-    # Will generate new derivative if needed
+    """Will generate new derivative if needed."""
     if web_image_path.exists():
         # Create derivative name
         derivative_file_name = full_image_path.stem + derivative_designator + full_image_path.suffix
@@ -34,13 +35,21 @@ def create_derivative(web_image_path=None, derivative_designator=None):
             return derivative_file_path # Existing path
         else:
             # Generate derivative
-            derivative_result = generate_derivative(source_path=web_image_path, derivative_path=derivative_file_path, derivative_designator=derivative_designator)
+            derivative_result = generate_derivative(
+                source_path=web_image_path,
+                derivative_path=derivative_file_path,
+                derivative_designator=derivative_designator)
             return derivative_result
     else:
         print('Full image missing:', web_image_path)
         return None
 
-def generate_derivative(source_path=None, derivative_path=None, derivative_designator=None):
+
+def generate_derivative(
+        source_path=None,
+        derivative_path=None,
+        derivative_designator=None):
+    """Generate derivative files based on designation."""
     if derivative_designator == THUMB_DESIGNATOR:
         dimension = THUMB_SIZE
     if derivative_designator == MED_DESIGNATOR:
@@ -56,10 +65,9 @@ def generate_derivative(source_path=None, derivative_path=None, derivative_desig
         print('Unable to create derivative:', e)
         return None
 
+
 def generate_url(file_base_path=FILE_BASE_PATH, file_path=None, url_base=URL_BASE):
-    """
-    Generate a URL using the file paths and URL base path.
-    """
+    """Generate a URL using the file paths and URL base path."""
     if file_path:
         common_path = os.path.commonpath([file_base_path, file_path])
         relative_path = os.path.relpath(file_path, start=common_path)
@@ -87,14 +95,19 @@ with open(input_file) as csvfile:
                 if not row['web_jpg_thumb_path']:
                     print('missing thumb record:', row['web_jpg_path'])
                     # Create thumb derivative if needed
-                    derivative_path = create_derivative(web_image_path=full_image_path, derivative_designator=THUMB_DESIGNATOR)
+                    derivative_path = create_derivative(
+                        web_image_path=full_image_path,
+                        derivative_designator=THUMB_DESIGNATOR)
                     occurrence_set[catalog_number]['thumbnail'] = generate_url(file_path=derivative_path)
                 else:
                     occurrence_set[catalog_number]['thumbnail'] = row['web_jpg_thumb_path']
                 if not row['web_jpg_med_path']:
                     print('missing med record:', row['web_jpg_path'])
-                    derivative_path = create_derivative(web_image_path=full_image_path, derivative_designator=MED_DESIGNATOR)
-                    occurrence_set[catalog_number]['web'] = generate_url(file_path=derivative_path)
+                    derivative_path = create_derivative(
+                        web_image_path=full_image_path,
+                        derivative_designator=MED_DESIGNATOR)
+                    occurrence_set[catalog_number]['web'] = generate_url(
+                        file_path=derivative_path)
                 else:
                     occurrence_set[catalog_number]['web'] = row['web_jpg_med_path']
                 # if either deriv path is empty, remove URLs, not a complete set
@@ -104,7 +117,7 @@ with open(input_file) as csvfile:
 # Write complete URL records in Symbiota URL mapping format
 output_file_name = Path(input_file).stem + '_new_urls.csv'
 with open(output_file_name, 'w', newline='') as csvfile:
-    fieldnames=['catalog_number', 'large', 'web', 'thumbnail']
+    fieldnames = ['catalog_number', 'large', 'web', 'thumbnail']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
     writer.writeheader()
     for key, image_set in occurrence_set.items():
