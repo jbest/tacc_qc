@@ -1,3 +1,19 @@
+"""Derivative File Checker
+
+This script scans the designated directory to determine if all expected image
+files are present and records the presence or absences in a CSV file.
+This script has no relevant use outside of the context of a TORCH/BRIT
+image processing workflow on TACC due to the very specific directory arrangement
+and configuration parameters.
+
+The script requires the path of a configuration file which is a JSON format
+file containing parameters for image storage.
+
+The output CSV file can be used as the input for tacc_fix.py which will generate
+any missing files and the URL mapping file needed for linking images in Symbiota.
+
+"""
+
 import argparse
 import datetime
 import os
