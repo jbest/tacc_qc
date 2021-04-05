@@ -112,7 +112,8 @@ with open(input_file) as csvfile:
                         derivative_designator=THUMB_DESIGNATOR)
                     occurrence_set[catalog_number]['thumbnail'] = generate_url(file_path=derivative_path)
                 else:
-                    occurrence_set[catalog_number]['thumbnail'] = row['web_jpg_thumb_path']
+                    #occurrence_set[catalog_number]['thumbnail'] = row['web_jpg_thumb_path']
+                    occurrence_set[catalog_number]['thumbnail'] = generate_url(file_path=row['web_jpg_thumb_path'])
                 if not row['web_jpg_med_path']:
                     print('missing med record:', row['web_jpg_path'])
                     derivative_path = create_derivative(
@@ -121,7 +122,8 @@ with open(input_file) as csvfile:
                     occurrence_set[catalog_number]['web'] = generate_url(
                         file_path=derivative_path)
                 else:
-                    occurrence_set[catalog_number]['web'] = row['web_jpg_med_path']
+                    #occurrence_set[catalog_number]['web'] = row['web_jpg_med_path']
+                    occurrence_set[catalog_number]['web'] = generate_url(file_path=row['web_jpg_med_path'])
                 # if either deriv path is empty, remove URLs, not a complete set
                 if not occurrence_set[catalog_number]['thumbnail'] and not occurrence_set[catalog_number]['web']:
                     del occurrence_set[catalog_number]
