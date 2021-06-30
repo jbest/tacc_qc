@@ -32,7 +32,7 @@ ap.add_argument("-i", "--input", required=True, \
 
 args = vars(ap.parse_args())
 input_file = args['input']
-
+#TODO add dry run flag - won't fix, just report count of OK sets vs lacking sets
 
 def create_derivative(web_image_path=None, derivative_designator=None):
     """Will generate new derivative if needed."""
