@@ -24,6 +24,7 @@ import csv
 
 def walk(path=None):
     # scan_start_time = datetime.now()
+
     web_jpg_p = re.compile(web_jpg_regex)
     web_jpg_med_p = re.compile(web_jpg_med_regex)
     web_jpg_thumb_p = re.compile(web_jpg_thumb_regex)
@@ -78,14 +79,17 @@ with open(config_file) as f:
 
 collection = config.get('collection', None)
 collection_prefix = collection.get('prefix', None)
+catalog_number_regex = collection.get('catalog_number_regex', None)
 files = config.get('files', None)
 #directory_path = Path(files.get('web_base_path', None))
 directory_path = Path(collection.get('web_base', None))
 file_types = config.get('file_types', None)
 
-web_jpg_regex = file_types['web_jpg']['file_regex']
-web_jpg_med_regex = file_types['web_jpg_med']['file_regex']
-web_jpg_thumb_regex = file_types['web_jpg_thumb']['file_regex']
+#regex = catalog_number_regex + file_regex
+# combine collection number regex with file regex
+web_jpg_regex = catalog_number_regex + file_types['web_jpg']['file_regex']
+web_jpg_med_regex = catalog_number_regex + file_types['web_jpg_med']['file_regex']
+web_jpg_thumb_regex = catalog_number_regex + file_types['web_jpg_thumb']['file_regex']
 
 if debug:
     print('collection:', collection)
