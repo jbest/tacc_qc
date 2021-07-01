@@ -80,9 +80,9 @@ files = config.get('files', None)
 directory_path = Path(collection.get('web_base', None))
 file_types = config.get('file_types', None)
 
-web_jpg_regex = file_types['web_jpg']['regex']
-web_jpg_med_regex = file_types['web_jpg_med']['regex']
-web_jpg_thumb_regex = file_types['web_jpg_thumb']['regex']
+web_jpg_regex = file_types['web_jpg']['file_regex']
+web_jpg_med_regex = file_types['web_jpg_med']['file_regex']
+web_jpg_thumb_regex = file_types['web_jpg_thumb']['file_regex']
 
 inventory = {}  # relevant contents of directory path
 walk(path=directory_path)
