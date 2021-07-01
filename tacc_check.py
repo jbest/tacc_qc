@@ -88,14 +88,14 @@ web_jpg_med_regex = file_types['web_jpg_med']['file_regex']
 web_jpg_thumb_regex = file_types['web_jpg_thumb']['file_regex']
 
 if debug:
-    print(f'{collection=}')
-    print(f'{collection_prefix=}')
-    print(f'{files=}')
-    print(f'{directory_path=}')
-    print(f'{file_types=}')
-    print(f'{web_jpg_regex=}')
-    print(f'{web_jpg_med_regex=}')
-    print(f'{web_jpg_thumb_regex=}')
+    print('collection:', collection)
+    print('collection_prefix:', collection_prefix)
+    print('files:', files)
+    print('directory_path:', directory_path)
+    print('file_types:', file_types)
+    print('web_jpg_regex:', web_jpg_regex)
+    print('web_jpg_med_regex:'. web_jpg_med_regex)
+    print('web_jpg_thumb_regex:'. web_jpg_thumb_regex)
 inventory = {}  # relevant contents of directory path
 walk(path=directory_path)
 
