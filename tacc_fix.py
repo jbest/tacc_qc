@@ -39,7 +39,7 @@ dry_run = args['dry_run']
 existing_web_image_count = 0
 missing_web_image_count = 0
 existing_med_image_count = 0
-missing_web_image_count = 0
+missing_med_image_count = 0
 existing_thumb_image_count = 0
 missing_thumb_image_count = 0
 incomplete_record_count = 0
@@ -130,7 +130,7 @@ with open(input_file) as csvfile:
                     existing_thumb_image_count += 1
                     occurrence_set[catalog_number]['thumbnail'] = generate_url(file_path=row['web_jpg_thumb_path'])
                 if not row['web_jpg_med_path']:
-                    missing_web_image_count += 1
+                    missing_med_image_count += 1
                     print('missing med record:', row['web_jpg_path'])
                     derivative_path = create_derivative(
                         web_image_path=full_image_path,
@@ -167,7 +167,7 @@ print('URL mapping file written to:', output_file_name)
 print('existing_web_image_count:', existing_web_image_count)
 print('missing_web_image_count:', missing_web_image_count)
 print('existing_med_image_count:', existing_med_image_count)
-print('missing_web_image_count:', missing_web_image_count)
+print('missing_med_image_count:', missing_med_image_count)
 print('existing_thumb_image_count:', existing_thumb_image_count)
 print('missing_thumb_image_count:', missing_thumb_image_count)
 print('incomplete_record_count:', incomplete_record_count)
