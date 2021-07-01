@@ -41,7 +41,7 @@ def walk(path=None):
             #TODO check to make sure file size > 0
             if m_web:
                 # full sized image
-                catalog_number = m_web['catalog_number']
+                catalog_number = m_web['catNum']
                 if catalog_number not in inventory:
                     inventory[catalog_number] = {'catalog_number': catalog_number}
                 inventory[catalog_number]['web_jpg'] = file_name
@@ -49,13 +49,13 @@ def walk(path=None):
                 #print('matches web:', file_name)
             if m_thumb:
                 #print('matches thumb:', file_name)
-                catalog_number = m_thumb['catalog_number']
+                catalog_number = m_thumb['catNum']
                 if catalog_number not in inventory:
                     inventory[catalog_number] = {'catalog_number': catalog_number}
                 inventory[catalog_number]['web_jpg_thumb'] = file_name
                 inventory[catalog_number]['web_jpg_thumb_path'] = file_path
             if m_med:
-                catalog_number = m_med['catalog_number']
+                catalog_number = m_med['catNum']
                 if catalog_number not in inventory:
                     inventory[catalog_number] = {'catalog_number': catalog_number}
                 inventory[catalog_number]['web_jpg_med'] = file_name
