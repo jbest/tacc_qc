@@ -164,18 +164,10 @@ with open(output_file_name, 'w', newline='') as csvfile:
 print('URL mapping file written to:', output_file_name)
 
 # Print report
-"""
 print('existing_web_image_count:', existing_web_image_count)
 print('missing_web_image_count:', missing_web_image_count)
 print('existing_med_image_count:', existing_med_image_count)
 print('missing_web_image_count:', missing_web_image_count)
 print('existing_thumb_image_count:', existing_thumb_image_count)
 print('missing_thumb_image_count:', missing_thumb_image_count)
-"""
-print(f'{existing_web_image_count=}')
-print(f'{missing_web_image_count=}')
-print(f'{existing_med_image_count=}')
-print(f'{missing_web_image_count=}')
-print(f'{existing_thumb_image_count=}')
-print(f'{missing_thumb_image_count=}')
-print(f'{incomplete_record_count=}')
+print('incomplete_record_count:', incomplete_record_count)
