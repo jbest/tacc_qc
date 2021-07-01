@@ -94,8 +94,8 @@ if debug:
     print('directory_path:', directory_path)
     print('file_types:', file_types)
     print('web_jpg_regex:', web_jpg_regex)
-    print('web_jpg_med_regex:'. web_jpg_med_regex)
-    print('web_jpg_thumb_regex:'. web_jpg_thumb_regex)
+    print('web_jpg_med_regex:', web_jpg_med_regex)
+    print('web_jpg_thumb_regex:', web_jpg_thumb_regex)
 inventory = {}  # relevant contents of directory path
 walk(path=directory_path)
 
