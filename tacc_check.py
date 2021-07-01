@@ -65,9 +65,12 @@ def walk(path=None):
 ap = argparse.ArgumentParser()
 ap.add_argument("-c", "--config", required=True, \
     help="Path to the configuration file to be used for processing images.")
+ap.add_argument("-d", "--debug", action="store_true", \
+    help="Print debug output.")
 
 args = vars(ap.parse_args())
 config_file = args['config']
+debug = args['debug']
 
 # load config file
 with open(config_file) as f:
@@ -84,6 +87,15 @@ web_jpg_regex = file_types['web_jpg']['file_regex']
 web_jpg_med_regex = file_types['web_jpg_med']['file_regex']
 web_jpg_thumb_regex = file_types['web_jpg_thumb']['file_regex']
 
+if debug:
+    print(f'{collection=}')
+    print(f'{collection_prefix=}')
+    print(f'{files=}')
+    print(f'{directory_path=}')
+    print(f'{file_types=}')
+    print(f'{web_jpg_regex=}')
+    print(f'{web_jpg_med_regex=}')
+    print(f'{web_jpg_thumb_regex=}')
 inventory = {}  # relevant contents of directory path
 walk(path=directory_path)
 
