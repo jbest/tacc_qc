@@ -151,7 +151,7 @@ with open(input_file) as csvfile:
 
 # Write complete URL records in Symbiota URL mapping format
 if dry_run:
-    output_file_name = Path(input_file).stem + 'DRY-RUN_new_urls.csv'
+    output_file_name = Path(input_file).stem + '_DRY-RUN_new_urls.csv'
 else:
     output_file_name = Path(input_file).stem + '_new_urls.csv'
 
