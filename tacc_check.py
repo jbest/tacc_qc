@@ -25,6 +25,7 @@ import csv
 def walk(path=None):
     # scan_start_time = datetime.now()
 
+    #TODO add (?i) to start of all regex to make case insensitive
     web_jpg_p = re.compile(web_jpg_regex)
     web_jpg_med_p = re.compile(web_jpg_med_regex)
     web_jpg_thumb_p = re.compile(web_jpg_thumb_regex)
