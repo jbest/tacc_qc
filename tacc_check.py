@@ -25,8 +25,6 @@ import csv
 def walk(path=None):
     # scan_start_time = datetime.now()
 
-    #TODO add (?i) to start of all regex to make case insensitive
-    #regex = '(?i)' + settings.catalog_number_regex + file_regex
     web_jpg_p = re.compile('(?i)' + web_jpg_regex)
     web_jpg_med_p = re.compile('(?i)' + web_jpg_med_regex)
     web_jpg_thumb_p = re.compile('(?i)' + web_jpg_thumb_regex)
@@ -44,26 +42,52 @@ def walk(path=None):
             if m_web:
                 # full sized image
                 #testing
-                print('Suffix:', m_web['suffix'])
+                suffix = m_web['suffix']
+                print('file_path:', file_path, 'suffix:', suffix)
                 catalog_number = m_web['catNum']
-                if catalog_number not in inventory:
-                    inventory[catalog_number] = {'catalog_number': catalog_number}
-                inventory[catalog_number]['web_jpg'] = file_name
-                inventory[catalog_number]['web_jpg_path'] = file_path
+                # adding suffix handling
+                if suffix:
+                    image_set = catalog_number + '_' + suffix
+                else:
+                    image_set = catalog_number
+                #if catalog_number not in inventory:
+                #    inventory[catalog_number] = {'catalog_number': catalog_number}
+                if image_set not in inventory:
+                    inventory[image_set] = {'catalog_number': catalog_number}
+                inventory[image_set]['web_jpg'] = file_name
+                inventory[image_set]['web_jpg_path'] = file_path
                 #print('matches web:', file_name)
             if m_thumb:
                 #print('matches thumb:', file_name)
                 catalog_number = m_thumb['catNum']
-                if catalog_number not in inventory:
-                    inventory[catalog_number] = {'catalog_number': catalog_number}
-                inventory[catalog_number]['web_jpg_thumb'] = file_name
-                inventory[catalog_number]['web_jpg_thumb_path'] = file_path
+                suffix = m_thumb['suffix']
+                print('file_path:', file_path, 'suffix:', suffix)
+                # adding suffix handling
+                if suffix:
+                    image_set = catalog_number + '_' + suffix
+                else:
+                    image_set = catalog_number
+                #if catalog_number not in inventory:
+                #    inventory[catalog_number] = {'catalog_number': catalog_number}
+                if image_set not in inventory:
+                    inventory[image_set] = {'catalog_number': catalog_number}
+                inventory[image_set]['web_jpg_thumb'] = file_name
+                inventory[image_set]['web_jpg_thumb_path'] = file_path
             if m_med:
                 catalog_number = m_med['catNum']
-                if catalog_number not in inventory:
-                    inventory[catalog_number] = {'catalog_number': catalog_number}
-                inventory[catalog_number]['web_jpg_med'] = file_name
-                inventory[catalog_number]['web_jpg_med_path'] = file_path
+                suffix = m_med['suffix']
+                print('file_path:', file_path, 'suffix:', suffix)
+                # adding suffix handling
+                if suffix:
+                    image_set = catalog_number + '_' + suffix
+                else:
+                    image_set = catalog_number
+                #if catalog_number not in inventory:
+                #    inventory[catalog_number] = {'catalog_number': catalog_number}
+                if image_set not in inventory:
+                    inventory[image_set] = {'catalog_number': catalog_number}
+                inventory[image_set]['web_jpg_med'] = file_name
+                inventory[image_set]['web_jpg_med_path'] = file_path
             # TODO: log unmatched files
 
 # set up argument parser
@@ -106,6 +130,8 @@ if debug:
     print('web_jpg_thumb_regex:', web_jpg_thumb_regex)
 inventory = {}  # relevant contents of directory path
 walk(path=directory_path)
+
+print(inventory)
 
 now = datetime.datetime.now()
 log_filename = collection['name'] + '_tacc_check_output_' + str(now.strftime('%Y-%m-%dT%H%M%S')) + '.csv'
