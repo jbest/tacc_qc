@@ -26,9 +26,10 @@ def walk(path=None):
     # scan_start_time = datetime.now()
 
     #TODO add (?i) to start of all regex to make case insensitive
-    web_jpg_p = re.compile(web_jpg_regex)
-    web_jpg_med_p = re.compile(web_jpg_med_regex)
-    web_jpg_thumb_p = re.compile(web_jpg_thumb_regex)
+    #regex = '(?i)' + settings.catalog_number_regex + file_regex
+    web_jpg_p = re.compile('(?i)' + web_jpg_regex)
+    web_jpg_med_p = re.compile('(?i)' + web_jpg_med_regex)
+    web_jpg_thumb_p = re.compile('(?i)' + web_jpg_thumb_regex)
 
     for root, dirs, files in os.walk(path):
 
@@ -42,6 +43,8 @@ def walk(path=None):
             #TODO check to make sure file size > 0
             if m_web:
                 # full sized image
+                #testing
+                print('Suffix:', m_web['suffix'])
                 catalog_number = m_web['catNum']
                 if catalog_number not in inventory:
                     inventory[catalog_number] = {'catalog_number': catalog_number}
