@@ -17,7 +17,6 @@ from PIL import Image
 import os.path
 from urllib.parse import urljoin
 
-
 # Image Configuration
 MED_DESIGNATOR = '_med'
 THUMB_DESIGNATOR = '_thumb'
