@@ -13,14 +13,20 @@ and configuration parameters.
 import csv
 import argparse
 from pathlib import Path
-from wand.image import Image
+#from wand.image import Image
+from PIL import Image
 import os.path
 from urllib.parse import urljoin
 
 THUMB_DESIGNATOR = '_thumb'
-THUMB_SIZE = 'x390'
+#THUMB_SIZE = 'x390'
 MED_DESIGNATOR = '_med'
-MED_SIZE = 'x900'
+#MED_SIZE = 'x900'
+
+# Image Configuration (copied from process.py)
+MEDIUM_SIZE = (800, 600)  # Medium image dimensions
+THUMBNAIL_SIZE = (150, 150)  # Thumbnail dimensions
+QUALITY = 85  # JPEG quality (1-100)
 
 # For URL generation
 FILE_BASE_PATH = '/corral-repl/projects/TORCH/web/'
@@ -70,25 +76,38 @@ def create_derivative(web_image_path=None, derivative_designator=None):
 def generate_derivative(
         source_path=None,
         derivative_path=None,
-        derivative_designator=None):
+        derivative_designator=None,
+        maintain_aspect=True):
     """Generate derivative files based on designation."""
     if derivative_designator == THUMB_DESIGNATOR:
-        dimension = THUMB_SIZE
+        dimension = THUMBNAIL_SIZE
     if derivative_designator == MED_DESIGNATOR:
-        dimension = MED_SIZE
+        dimension = MEDIUM_SIZE
     if dry_run:
         return derivative_path
     else:
+
         try:
-            with Image(filename=source_path) as original:
-                with original.clone() as derivative:
-                    # resize height, preserve aspect ratio
-                    derivative.transform(resize=dimension)
-                    derivative.save(filename=derivative_path)
-                    return derivative_path
+            with Image.open(source_path) as img:
+                if maintain_aspect:
+                    # Use thumbnail method to maintain aspect ratio
+                    img.thumbnail(dimension, Image.Resampling.LANCZOS)
+                else:
+                    # Resize to exact dimensions (may distort image)
+                    img = img.resize(dimension, Image.Resampling.LANCZOS)
+                
+                # Convert to RGB if necessary (handles RGBA, P mode images)
+                if img.mode in ('RGBA', 'P'):
+                    img = img.convert('RGB')
+                
+                # Save the resized image
+                img.save(derivative_path, 'JPEG', quality=QUALITY, optimize=True)
+                return derivative_path
+                
         except Exception as e:
-            print('Unable to create derivative:', e)
-            return None
+            print(f"Error processing {source_path}: {str(e)}")
+            return False
+
 
 def generate_url(file_base_path=FILE_BASE_PATH, file_path=None, url_base=URL_BASE):
     """Generate a URL using the file paths and URL base path."""
