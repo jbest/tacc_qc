@@ -13,19 +13,16 @@ and configuration parameters.
 import csv
 import argparse
 from pathlib import Path
-#from wand.image import Image
 from PIL import Image
 import os.path
 from urllib.parse import urljoin
 
-THUMB_DESIGNATOR = '_thumb'
-#THUMB_SIZE = 'x390'
-MED_DESIGNATOR = '_med'
-#MED_SIZE = 'x900'
 
-# Image Configuration (copied from process.py)
-MEDIUM_SIZE = (800, 600)  # Medium image dimensions
-THUMBNAIL_SIZE = (150, 150)  # Thumbnail dimensions
+# Image Configuration
+MED_DESIGNATOR = '_med'
+THUMB_DESIGNATOR = '_thumb'
+MED_SIZE = (800, 600)  # Medium image dimensions
+THUMB_SIZE = (150, 150)  # Thumbnail dimensions
 QUALITY = 85  # JPEG quality (1-100)
 
 # For URL generation
@@ -80,9 +77,9 @@ def generate_derivative(
         maintain_aspect=True):
     """Generate derivative files based on designation."""
     if derivative_designator == THUMB_DESIGNATOR:
-        dimension = THUMBNAIL_SIZE
+        dimension = THUMB_SIZE
     if derivative_designator == MED_DESIGNATOR:
-        dimension = MEDIUM_SIZE
+        dimension = MED_SIZE
     if dry_run:
         return derivative_path
     else:
@@ -106,7 +103,7 @@ def generate_derivative(
                 
         except Exception as e:
             print(f"Error processing {source_path}: {str(e)}")
-            return False
+            return None
 
 
 def generate_url(file_base_path=FILE_BASE_PATH, file_path=None, url_base=URL_BASE):
