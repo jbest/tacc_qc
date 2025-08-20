@@ -43,7 +43,7 @@ def walk(path=None):
                 # full sized image
                 #testing
                 suffix = m_web['suffix']
-                print('file_path:', file_path, 'suffix:', suffix)
+                #print('file_path:', file_path, 'suffix:', suffix)
                 catalog_number = m_web['catNum']
                 # adding suffix handling
                 if suffix:
@@ -61,7 +61,7 @@ def walk(path=None):
                 #print('matches thumb:', file_name)
                 catalog_number = m_thumb['catNum']
                 suffix = m_thumb['suffix']
-                print('file_path:', file_path, 'suffix:', suffix)
+                #print('file_path:', file_path, 'suffix:', suffix)
                 # adding suffix handling
                 if suffix:
                     image_set = catalog_number + '_' + suffix
@@ -76,7 +76,7 @@ def walk(path=None):
             if m_med:
                 catalog_number = m_med['catNum']
                 suffix = m_med['suffix']
-                print('file_path:', file_path, 'suffix:', suffix)
+                #print('file_path:', file_path, 'suffix:', suffix)
                 # adding suffix handling
                 if suffix:
                     image_set = catalog_number + '_' + suffix
