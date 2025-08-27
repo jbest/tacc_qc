@@ -131,7 +131,7 @@ if debug:
 inventory = {}  # relevant contents of directory path
 walk(path=directory_path)
 
-print(inventory)
+#print(inventory)
 
 now = datetime.datetime.now()
 log_filename = collection['name'] + '_tacc_check_output_' + str(now.strftime('%Y-%m-%dT%H%M%S')) + '.csv'
