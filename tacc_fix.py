@@ -20,8 +20,8 @@ from urllib.parse import urljoin
 # Image Configuration
 MED_DESIGNATOR = '_med'
 THUMB_DESIGNATOR = '_thumb'
-MED_SIZE = (800, 600)  # Medium image dimensions
-THUMB_SIZE = (150, 150)  # Thumbnail dimensions
+MED_SIZE = (900, 900)  # Medium image dimensions
+THUMB_SIZE = (390, 390)  # Thumbnail dimensions
 QUALITY = 85  # JPEG quality (1-100)
 
 # For URL generation
